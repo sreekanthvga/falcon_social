@@ -1,5 +1,9 @@
+D:\Falcom\falcon_social\src\main\java\falcon\consumer\ConsumerApplication.java
+D:\Falcom\falcon_social\src\main\java\falcon\consumer\RedisPersistHandler.java
 D:\Falcom\falcon_social\src\main\java\falcon\server\config\MessagesConfiguration.java
 D:\Falcom\falcon_social\src\main\java\falcon\server\resources\HelloResource.java
+D:\Falcom\falcon_social\src\main\java\falcon\consumer\AbstractMessageHandler.java
 D:\Falcom\falcon_social\src\main\java\falcon\server\resources\FalconMessage.java
+D:\Falcom\falcon_social\src\main\java\falcon\consumer\RedisSubscriber.java
 D:\Falcom\falcon_social\src\main\java\falcon\server\config\ExampleServiceConfiguration.java
 D:\Falcom\falcon_social\src\main\java\falcon\server\MessageHandler.java

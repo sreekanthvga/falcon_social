@@ -1,4 +1,4 @@
-package falcon.server;
+package falcon.consumer;
 
 import java.io.IOException;
 

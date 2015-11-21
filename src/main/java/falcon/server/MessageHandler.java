@@ -21,12 +21,6 @@ public class MessageHandler extends Application<ExampleServiceConfiguration> {
 
     @Override
     public void initialize(Bootstrap<ExampleServiceConfiguration> bootstrap) {
-    	/*bootstrap.addBundle(new JedisBundle<ExampleServiceConfiguration>() {
-            @Override
-            public JedisFactory getJedisFactory(ExampleServiceConfiguration configuration) {
-                return configuration.getJedisFactory();
-            }
-        });*/
     }
 
     @Override
@@ -36,7 +30,6 @@ public class MessageHandler extends Application<ExampleServiceConfiguration> {
         
          final JedisPoolConfig poolConfig = new JedisPoolConfig();
          final JedisPool jedisPool = new JedisPool(poolConfig, "localhost", 6379, 0);
-         //final JedisPool pool = conf.getJedisFactory().build(env);
          env.jersey().register(new FalconMessage(jedisPool));
     
     }
