@@ -14,30 +14,22 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import be.tomcools.dropwizard.websocket.WebsocketBundle;
+//import falcon.server.WebSocketClient;
+
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
 @Path(value = "/")
 public class FalconMessage {
-	private UUID uuid;
-	private String header;
-	private String payload;
-	private String timestamp;
-
 	JedisPool pool;
 	public FalconMessage(JedisPool jedisPool) {
     	pool = jedisPool; 
     }
-	
-	public FalconMessage(String header, String body) {
-	    DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-	    Date date = new Date();
-		this.header = header;
-		this.payload = body;
-		this.uuid = java.util.UUID.randomUUID();
-		this.timestamp = dateFormat.format(date);
-	}
 	
 	private String getDateTime() {
 		System.out.println("Request -> HIT 2" );
@@ -62,8 +54,10 @@ public class FalconMessage {
     	try (Jedis jedis = pool.getResource()) {
     		jedis.publish("BROADCAST", json.toString());
     		System.out.println("Active: " + pool.getNumActive());
-    		return json;
     	}
+    	//push to websocket
+    	//sendMessageOverSocket(json.toString());
+    	return json;
 	}
 	
 	@Path(value = "messages")
@@ -95,7 +89,7 @@ public class FalconMessage {
 			    scanResult=jedis.scan(cursor);
 			    cursor=scanResult.getStringCursor();
 			    keys=scanResult.getResult();
-			  } while (cursor != null && !cursor.equals("0") && keys != null && keys.size() > 0);
+			  } while (cursor != null && !cursor.equals("0") /*&& keys != null && keys.size() > 0 */);
 			
 		}
 		

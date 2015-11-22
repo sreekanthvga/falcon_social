@@ -1,19 +1,11 @@
-package falcon.consumer;
-
-import redis.clients.jedis.JedisPool;
-import redis.clients.jedis.JedisPubSub;
-import com.fasterxml.jackson.databind.ObjectMapper;
+package falcon.server;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import redis.clients.jedis.JedisPubSub;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class RedisSubscriber extends JedisPubSub {
-	private Logger logger;
-	private RedisPersistHandler pHandler;
-	
-	public RedisSubscriber(JedisPool pool) {
-		this.logger = LoggerFactory.getLogger(this.getClass());
-		this.pHandler = new RedisPersistHandler(pool);
-	}
+public abstract class RedisAbstractSubscriber extends JedisPubSub {
+	private Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	@Override
 	public void onUnsubscribe(String channel, int subscribedChannels) {
@@ -41,13 +33,7 @@ public class RedisSubscriber extends JedisPubSub {
 	}
 
 	@Override
-    public void onMessage(String channel, String message) {
-		try {
-			pHandler.onMessage(channel, message);
-		} catch (Exception ex) {
-			logger.error("Failed to Persist message " + message + " on channel " + channel);
-		}
-	}
+	abstract public void onMessage(String channel, String message);
 
 	public void logger(String channel, String message) {
 		ObjectMapper mapper = new ObjectMapper();

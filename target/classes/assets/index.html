@@ -1,0 +1,103 @@
+<html>
+<body>
+	<div>
+		<input type="text" id="input" />
+	</div>
+	<div>
+		<input type="button" id="connectBtn" value="CONNECT"
+			onclick="toogle()" /> 
+        <input type="button" id="sendBtn"
+			value="SEND" onclick="send()" disabled="true" />
+	</div>
+	<div id="output">
+		<p>Output</p>
+	</div>
+ <table id="table" border="1">
+  <thead>
+   <tr>
+    <th>Time</th>
+    <th>Message</th>
+   </tr>
+  </thead>
+  <tbody>
+   <td>1234</td>
+   <td>Dummy Message</td>
+  </tbody>
+ </table>
+
+</body>
+
+<script>
+var webSocket;
+var output = document.getElementById("output");
+var table  = document.getElementById("table");
+var connectBtn = document.getElementById("connectBtn");
+var sendBtn = document.getElementById("sendBtn");
+var wsUri = "ws://" + "localhost" + ":8080/listenwebsocket/";
+function newEvent(message) {
+  var connectObject = {};
+  connectObject['time'] = new Date().getTime();
+  connectObject['payload'] = message;
+  return connectObject
+}
+function toogle() {
+ // open the connection if one does not exist
+ if (webSocket !== undefined
+   && webSocket.readyState == WebSocket.OPEN) {
+   closeSocket();
+            return;
+ }
+ // Create a websocket
+ webSocket = new WebSocket(wsUri);
+ webSocket.onopen = function(event) {
+  connectBtn.setAttribute('value', 'Disconnect');
+  sendBtn.disabled = false;
+  var connectObject = newEvent('Connected');
+  updateOutput(connectObject);
+ };
+ webSocket.onmessage = function(event) {
+  updateOutput(JSON.parse(event.data));
+ };
+ webSocket.onclose = function(event) {
+  connectBtn.setAttribute('value', 'Connect');
+  sendBtn.disabled = true;
+  updateOutput(newEvent("Connection Closed"));
+ };
+}
+function send() {
+ var text = document.getElementById("input").value;
+ var obj = newEvent(text);
+ webSocket.send(JSON.stringify(obj));
+}
+function closeSocket() {
+ webSocket.close();
+ webSocket.onclose();
+}
+function updateTable(text) {
+ var row = table.insertRow(1);
+ var cell1 = row.insertCell(0);
+ var cell2 = row.insertCell(1);
+ cell1.innerHTML = text.time;
+ cell2.innerHTML = JSON.stringify(text); 
+}
+function updateOutput(obj) {
+ output.innerHTML = JSON.stringify(obj);
+ updateTable(obj);
+}
+ 
+function refreshView() {
+ var epoch = new Date().getTime() - 30000;
+ for (var i = 1, row; row = table.rows[i]; i++) {
+  var messageTime = row.cells[0].innerHTML;
+  if (messageTime < epoch) {
+   table.deleteRow(i)
+   i--;
+  }
+ }
+}  
+ 
+var myVar=setInterval(function () {refreshView()}, 2000);
+toogle();
+</script>
+
+</html>

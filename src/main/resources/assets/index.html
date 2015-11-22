@@ -1,0 +1,84 @@
+<html>
+<body>
+	
+	<div>
+		<input type="button" id="connectBtn" value="CONNECT" onclick="toogle()" /> 
+	</div>
+	
+ <table id="table" border="1">
+  <thead>
+   <tr>
+    <th>TimeStamp</th>
+    <th>Message Chronology</th>
+   </tr>
+  </thead>
+  <tbody>
+   <td>EPOC </td>
+   <td>Welcome Websocket Client!!</td>
+  </tbody>
+ </table>
+
+</body>
+
+<script>
+var webSocket;
+var table  = document.getElementById("table");
+var connectBtn = document.getElementById("connectBtn");
+var wsUri = "ws://" + "localhost" + ":8080/listenwebsocket/";
+
+function newEvent(message) {
+  var connectObject = {};
+  connectObject['timestamp'] = new Date().getTime();
+  connectObject['payload'] = message;
+  return connectObject
+}
+function toogle() {
+     if (webSocket !== undefined
+       && webSocket.readyState == WebSocket.OPEN) {
+       closeSocket();
+       return;
+     }
+     // Create a websocket
+     webSocket = new WebSocket(wsUri);
+     webSocket.onopen = function(event) {
+      connectBtn.setAttribute('value', 'Disconnect');
+      var connectObject = newEvent('Connected');
+      updateTable(connectObject);
+     };
+     webSocket.onmessage = function(event) {
+      updateTable(JSON.parse(event.data));
+     };
+     webSocket.onclose = function(event) {
+      connectBtn.setAttribute('value', 'Connect');
+      updateTable(newEvent("Connection Closed"));
+     };
+}
+
+function closeSocket() {
+   webSocket.close();
+   webSocket.onclose();
+}
+function updateTable(text) {
+ var row = table.insertRow(1);
+ var cell1 = row.insertCell(0);
+ var cell2 = row.insertCell(1);
+ cell1.innerHTML = text.TIMESTAMP;
+ cell2.innerHTML = JSON.stringify(text); 
+}
+ 
+function refreshView() {
+ var epoch = new Date().getTime() - 30000;
+ for (var i = 1, row; row = table.rows[i]; i++) {
+  var messageTime = row.cells[0].innerHTML;
+  if (messageTime < epoch) {
+   table.deleteRow(i)
+   i--;
+  }
+ }
+}  
+ 
+var myVar=setInterval(function () {refreshView()}, 2000);
+toogle();
+</script>
+
+</html>

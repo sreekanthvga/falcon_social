@@ -18,6 +18,12 @@
     </dependency>
     
      <dependency>
+         <groupId>io.dropwizard</groupId>
+         <artifactId>dropwizard-assets</artifactId>
+          <version>0.9.1</version>
+      </dependency>
+    
+     <dependency>
        	<groupId>com.bendb.dropwizard</groupId>
        	<artifactId>dropwizard-redis</artifactId>
        	<version>0.8.1-0</version>
@@ -38,7 +44,18 @@
        	<artifactId>javax-websocket-server-impl</artifactId>
        	<version>9.2.9.v20150224</version>
      </dependency>
+     
+    <dependency>
+    <groupId>org.eclipse.jetty.websocket</groupId>
+    <artifactId>websocket-server</artifactId>
+    <version>9.2.9.v20150224</version>
+	</dependency>
         
+    <dependency>
+	  <groupId>be.tomcools</groupId>
+	  <artifactId>dropwizard-websocket-jee7-bundle</artifactId>
+	  <version>1.0.0</version>
+	</dependency>
 </dependencies>
 
 <build>
